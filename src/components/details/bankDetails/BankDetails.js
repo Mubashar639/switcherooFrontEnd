@@ -4,6 +4,7 @@ import "./BankDetails.css";
 import BankCollapse from "./BankCollasp";
 import Api from "../../../redux/api/detailsApi";
 import { connect } from "react-redux";
+import { baseurl } from "../../../redux/api";
 
 const { Option } = Select;
 const purposeArray = [
@@ -38,24 +39,7 @@ const AddAcount = props => {
 };
 class BankDetails extends Component {
   state = {
-    loanOrOverdraftCosts: [
-      {
-        accType: "overdraft",
-        accPurpose: "savings",
-        comments: "",
-        lenderName: "AIB",
-        creditUnionName: "",
-        creditUnionLoc: "Dublin",
-        accNumber: "",
-        outstandingBal: "",
-        maxOutstandingBal: 750000,
-        monthlyRepayments: 3500,
-        arrears: 4000,
-        finalPayDate: "",
-        clearing: "yes",
-        isActive: false,
-      },
-    ],
+    loanOrOverdraftCosts: [],
     monthlyOutgoings: {},
     creditCommitments: {},
     q4: false,
@@ -112,7 +96,7 @@ class BankDetails extends Component {
         },
         ...loanOrOverdraftCosts.slice( index + 1 )
       ]
-     
+
     } ) );
   }
   //handle purpose select 
@@ -170,7 +154,7 @@ class BankDetails extends Component {
     let { loanOrOverdraftCosts } = this.state
 
     this.props.bankDetailsPost( {
-      userId: "5e407cceb15f780017b0a1b4",
+      userId: this.props.userId,
       monthlyOutgoings: {
         ...this.state.monthlyOutgoings
       },
@@ -193,7 +177,8 @@ class BankDetails extends Component {
         "Content-Type": "application/json"
       } )
     };
-    fetch( "https://switchroo.herokuapp.com/detailsYouNeed/getDetails/5e407cceb15f780017b0a1b4", options )
+    let url = `${ baseurl }/detailsYouNeed/getDetails/${ this.props.userId }`
+    fetch( url, options )
       .then( res => {
         console.log( res );
         res.json().then( res => {
@@ -288,6 +273,11 @@ class BankDetails extends Component {
       </React.Fragment>
     );
   };
+  componentWillMount() {
+    this.setState( {
+      loanOrOverdraftCosts: this.props.loanOrOverdraftCosts ? this.props.loanOrOverdraftCosts : []
+    } )
+  }
 
   render() {
     const { questions, loanOrOverdraftCosts } = this.state
@@ -411,9 +401,11 @@ class BankDetails extends Component {
 
 const mapStateToProps = ( state ) => {
   return {
+    userId: state.userReducer.user._id,
     newProps: state.detailsReducer,
     loading: state.detailsReducer.loading,
     error: state.detailsReducer.error,
+    loanOrOverdraftCosts: state.detailsReducer.loanOrOverdraftCosts
   }
 }
 

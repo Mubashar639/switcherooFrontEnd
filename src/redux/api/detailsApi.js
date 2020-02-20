@@ -7,7 +7,7 @@ let timeoutGlobel = 10000
 const token = localStorage.getItem( "tokenas" );
 const detailsDataPost = ( data, callback ) => dispatch => {
   dispatch( actions.LoadingDetailsData( true ) );
-  console.log( "data json", data );
+  console.log( "data json=====>", data );
   const options = {
     method: "POST",
     body: JSON.stringify( { ...data } ),
@@ -20,10 +20,11 @@ const detailsDataPost = ( data, callback ) => dispatch => {
     .then( res => {
       // dispatch(actions.LoadingDetailsData(false));
       console.log( "new response===>", res );
-      if ( res.status === 200 )
+      if ( res.status === 200 || res.status === 201 )
         res.json().then( res => {
-          console.log( "response data======>", res.updatedApplicant );
-          dispatch( actions.setDetailsData( res.updatedApplicants ) );
+
+          console.log( "response data======>", res.updatedApplicants );
+          dispatch( actions.setDetailsData( data.monthlyOutgoings ) );
 
         } );
     } )
@@ -50,12 +51,14 @@ const detailsCreditDataPost = ( data, callback ) => dispatch => {
       // dispatch(actions.LoadingDetailsData(false));
       console.log( "new response===>", res );
       console.log( "data=====>", data );
-      if ( res.status === 200 )
+      if ( res.status === 200 || res.status === 201 ) {
         res.json().then( res => {
-          console.log( "response data======>", res.updatedApplicant );
+          console.log( "new response data======>", res );
           dispatch( actions.setDetailsDataCredit( data.creditCommitments ) );
 
         } );
+      }
+
     } )
     .catch( err => {
       console.log( err );
@@ -79,9 +82,9 @@ const bankDetailsPost = ( data, callback ) => dispatch => {
       // dispatch(actions.LoadingDetailsData(false));
       console.log( "new response===>", res );
       console.log( "data=====>", data );
-      if ( res.status === 200 )
+      if ( res.status === 200 || res.status === 201 )
         res.json().then( res => {
-          console.log( "response data======>", res.updatedApplicant );
+          console.log( "new response data======>", res );
           dispatch( actions.setBankDetails( data.creditCommitments.loanOrOverdraftCosts ) );
 
         } );

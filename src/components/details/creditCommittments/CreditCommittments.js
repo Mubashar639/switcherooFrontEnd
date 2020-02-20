@@ -5,6 +5,8 @@ import InputMask from 'react-input-mask'
 import { connect } from "react-redux";
 import Api from "../../../redux/api/detailsApi";
 import { baseurl } from "../../../redux/api";
+import * as actions from "../../../redux/actions/details/detailsAction";
+import { configConsumerProps } from "antd/lib/config-provider";
 
 const { Option } = Select;
 const banks = [
@@ -215,12 +217,17 @@ class CreditCommittments extends Component {
                 "Content-Type": "application/json"
             } )
         };
-        let url = `${ baseurl}/detailsYouNeed/getDetails/${ this.props.userId }`
+        let url = `${ baseurl }/detailsYouNeed/getDetails/${ this.props.userId }`
         fetch( url, options )
             .then( res => {
                 console.log( res );
                 res.json().then( res => {
+                    console.log( "credic commentments===>", res );
                     console.log( "responsed====>", res.creditCommitments );
+                    if(res.creditCommitments.loanOrOverdraftCosts && res.creditCommitments.loanOrOverdraftCosts.length>0){
+                        console.log("inside condition===>",res.creditCommitments.loanOrOverdraftCosts)
+                        this.props.setBanks(res.creditCommitments.loanOrOverdraftCosts);
+                    }
                     if ( res.creditCommitments ) {
                         const { currentAccIns,
                             sortCode,
@@ -522,8 +529,9 @@ const mapStateToProps = ( state ) => {
 }
 
 
-const mapDispatchToProps = dispacth => ( {
+const mapDispatchToProps = dispatch => ( {
     setCreditCommentments: ( props, callback ) =>
-        dispacth( Api.detailsCreditDataPost( props, callback ) )
+        dispatch( Api.detailsCreditDataPost( props, callback ) ),
+    setBanks: ( data ) => dispatch( actions.setBanks( data ) ),
 } );
 export default connect( mapStateToProps, mapDispatchToProps )( CreditCommittments );

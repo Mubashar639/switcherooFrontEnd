@@ -46,12 +46,12 @@ class MonthlyOutgoing extends Component {
             clubSubcriptions: parseInt( clubSubcriptions ),
         }
         this.props.setMonthlyDetails( {
-            userId:this.props.userId,
+            userId: this.props.userId,
             monthlyOutgoings: {
                 ...data
             }
         } )
-
+        console.log( "loading=============>", this.props.loading )
         if ( !this.props.loading ) {
             this.props.changeProfRout( 6 );
         }
@@ -66,7 +66,7 @@ class MonthlyOutgoing extends Component {
                 "Content-Type": "application/json"
             } )
         };
-        let url = `${ baseurl }/detailsYouNeed/getDetails/${this.props.userId}`
+        let url = `${ baseurl }/detailsYouNeed/getDetails/${ this.props.userId }`
         fetch( url, options )
             .then( res => {
                 console.log( "response=====>", res );
@@ -226,7 +226,7 @@ class MonthlyOutgoing extends Component {
 }
 const mapStateToProps = ( state ) => {
     return {
-        userId:state.userReducer.user._id,
+        userId: state.userReducer.user._id,
         newProps: state.detailsReducer.monthlyOutgoings,
         loading: state.detailsReducer.loading,
         error: state.detailsReducer.error,

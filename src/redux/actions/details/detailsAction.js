@@ -16,10 +16,15 @@ const setBankDetails = (payload)=>({
   type:actions.SET_BANK_DETAILS,
   payload
 })
+const setBanks = (payload)=>({
+  type:actions.SET_BANKS,
+  payload
+})
 
 export {
   setDetailsData,
   LoadingDetailsData,
   setDetailsDataCredit,
-  setBankDetails
+  setBankDetails,
+  setBanks,
 };
